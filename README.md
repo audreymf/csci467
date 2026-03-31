@@ -1,4 +1,4 @@
-# CSCI467- Group Project 3B
+# CSCI467- Group Project 3B | The Egeinator
 
 ## Important:
 I think for management, every item/feature that someone works on should have its own branch. For example, adding code for creating quotes, price calculation, removing line items, etc. Essentially a specific task. Each of these can get merged at a time --> less merge conflicts.

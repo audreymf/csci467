@@ -1,3 +1,9 @@
+/*Database Eng (Role 3)
+  Interface w/ legacy DB.
+  Retrieves customer records, validates customers
+  Used by quotes.js too
+*/
+
 var mysql = require('mysql')
 var connection = mysql.createConnection({
   host: 'blitz.cs.niu.edu',

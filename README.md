@@ -1,5 +1,8 @@
 # CSCI467- Group Project 3B
 
+## Important:
+I think for management, every item/feature that someone works on should have its own branch. For example, adding code for creating quotes, price calculation, removing line items, etc. Essentially a specific task. Each of these can get merged at a time --> less merge conflicts.
+
 ## Quote System - Problem Statement
 As a group of software engineers with a company that sells plant repair services via a network of sales people, you are tasked to build a new system that enables the sales force to record their quotes via the Internet. The system will maintain a database of sales associates, handle the recording of sales quotes, establish and fulfill purchase orders. The system will also assign sales commissions for the sales associate.
 

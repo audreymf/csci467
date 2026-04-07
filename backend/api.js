@@ -1,5 +1,3 @@
-const express = require('express')
+const apiRoutes = require('./backend/api');
 
-const app = express()
-var port = process.env.PORT || 3000;
-
+app.use('/api', apiRoutes);

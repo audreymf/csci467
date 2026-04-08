@@ -13,15 +13,6 @@ var connection = mysql.createConnection({
 });
 
 // Connection to our created DB
-var system_db = mysql.createConnection({
-  host: '10.168.191.95',
-  port: 3306,
-  user: 'team',
-  password: 'ege467',
-  database: 'quote_system'
-});
-
-// Connection to our created DB
 // I did not open this to public networks so it should work
 // with the specific login info included here
 var system_db = mysql.createConnection({

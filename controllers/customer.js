@@ -25,15 +25,15 @@ var system_db = mysql.createConnection({
 
 // Throw error if we cannot connect to legacy DB
 legacy_db.connect(err => {
-  if(err) throw errl
+  if(err) throw err;
   console.log('Connected to legacy database');
-}
+});
                   
 // sane for our DB
 system_db.connect(err => {
-  if(err) throw errl
+  if(err) throw err
   console.log('Connected to quote_system database');
-}   
+});   
 
 // Not sure if we need this here anymore but I added exports for our own tables too
 module.exports = {

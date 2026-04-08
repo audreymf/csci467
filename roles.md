@@ -14,7 +14,7 @@
   - apply discount
 - Email sending (can fake this with console logs if needed)
 
-**Role 3: Database Engineer (Data & Integration Layer**
+**Role 3: Database Engineer (Data & Integration Layer)**
 - Design application DB schema
 - Maintain relationships:
   - quotes w/ line_items and notes

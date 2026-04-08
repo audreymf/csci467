@@ -5,7 +5,7 @@
 */
 
 var mysql = require('mysql')
-var connection = mysql.createConnection({
+var legacy_db = mysql.createConnection({
   host: 'blitz.cs.niu.edu',
   user: 'student',
   password: 'student',

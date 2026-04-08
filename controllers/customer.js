@@ -37,42 +37,43 @@ system_db.connect(err => {
 
 // Not sure if we need this here anymore but I added exports for our own tables too
 module.exports = {
-    getLegacyCustomers: async result => {
-        connection.query('SELECT * FROM customers', function(err, rows){
-            if (err) throw err;
-            console.log('found ', rows.length, ' customers');
-            result(rows);
-        });
-    }
-  getSalesAssociates: async result => {
-        connection.query('SELECT * FROM sales_associates', function(err, rows){
-            if (err) throw err;
-            console.log('found ', rows.length, ' sales_associates');
-            result(rows);
-        });
-    }
+  getLegacyCustomers: async result => {
+    connection.query('SELECT * FROM customers', function(err, rows){
+      if (err) throw err;
+      console.log('found ', rows.length, ' customers');
+      result(rows);
+  });
+},
+  
+getSalesAssociates: async result => {
+    connection.query('SELECT * FROM sales_associates', function(err, rows){
+      if (err) throw err;
+      console.log('found ', rows.length, ' sales_associates');
+      result(rows);
+  });
+},
 
-  getQuotes: async result => {
-        connection.query('SELECT * FROM quotes', function(err, rows){
-            if (err) throw err;
-            console.log('found ', rows.length, ' quotes');
-            result(rows);
-        });
-    }
+getQuotes: async result => {
+  connection.query('SELECT * FROM quotes', function(err, rows){
+    if (err) throw err;
+    console.log('found ', rows.length, ' quotes');
+    result(rows);
+  });
+},
 
-  getLineItems: async result => {
-        connection.query('SELECT * FROM line_items', function(err, rows){
-            if (err) throw err;
-            console.log('found ', rows.length, ' line_items');
-            result(rows);
-        });
-    }
+getLineItems: async result => {
+  connection.query('SELECT * FROM line_items', function(err, rows){
+    if (err) throw err;
+    console.log('found ', rows.length, ' line_items');
+    result(rows);
+});
+},
 
-  getNotes: async result => {
-        connection.query('SELECT * FROM notes', function(err, rows){
-            if (err) throw err;
-            console.log('found ', rows.length, ' notes');
-            result(rows);
-        });
-    }
+getNotes: async result => {
+  connection.query('SELECT * FROM notes', function(err, rows){
+    if (err) throw err;
+    console.log('found ', rows.length, ' notes');
+    result(rows);
+  });
+}
 }

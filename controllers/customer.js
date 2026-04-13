@@ -43,8 +43,8 @@ module.exports = {
       console.log('found ', rows.length, ' customers');
       result(rows);
   });
-},
-  
+}}
+ /* 
 getSalesAssociates: async result => {
     connection.query('SELECT * FROM sales_associates', function(err, rows){
       if (err) throw err;
@@ -76,4 +76,4 @@ getNotes: async result => {
     result(rows);
   });
 }
-}
+}*/

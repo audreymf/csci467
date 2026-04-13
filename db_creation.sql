@@ -38,7 +38,7 @@ CREATE TABLE line_items(
 
 -- Notes Table
 CREATE TABLE notes (
-  id int AUTO_INCREMENT NOT NULL,
+  id int AUTO_INCREMENT PRIMARY KEY,
   quoteID INT NOT NULL,
   content text,
   is_secret boolean DEFAULT FALSE,

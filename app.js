@@ -5,8 +5,8 @@ var port = process.env.PORT || 3000;
 
 const apiRoutes = require('./backend/api');
 
-app.use('/api', apiRoutes);
-
+app.use('/backend', apiRoutes);
+app.use(express.json());
 
 
 // set the view engine to ejs

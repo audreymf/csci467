@@ -7,7 +7,7 @@ router.get('/test', (req, res) => {
   res.send('API is working');
 });
 
-module.exports = router;
+
 
 router.post('/', async (req, res) => {
   const { associateID, customerID, email } = req.body;
@@ -184,3 +184,5 @@ router.post('/:id/discount', async (req, res) => {
     res.status(500).send('Discount failed');
   }
 });
+
+module.exports = router;

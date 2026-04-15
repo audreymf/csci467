@@ -6,7 +6,7 @@ var port = process.env.PORT || 3000;
 const apiRoutes = require('./backend/api');
 
 app.use(express.json());
-app.use('/backend', apiRoutes);
+app.use('/api/quotes', apiRoutes);
 
 
 

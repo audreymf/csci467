@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('views/db'); //need to update this for db permissions
+const db = require('../db'); //need to update this for db permissions
 
 // example route
 router.get('/test', (req, res) => {

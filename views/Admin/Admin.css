@@ -1,0 +1,157 @@
+.bar{
+	height:80px;
+	background-color: #9A8BC7;
+	color: white;
+	font-size: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 500px;
+	padding: 0 20px		
+    }
+
+.body1{
+	background-color: #F9F9F9;
+	margin: 0;
+	padding: 0;
+      }
+
+.bar form {	
+	margin: 0;
+	padding: 0;	
+	  }
+
+.switch{
+   	font-size: 20px;
+	padding: 8px 20px;
+	cursor: pointer;	
+	background-color: white;
+	}
+		   
+
+.header-box{
+	display: flex;
+	margin-top: 20px;
+	padding-left: 30px;	
+	   }
+			
+
+.header{
+	font-size: 35px;
+	color: #9A8BC7;
+	margin-top: 40px;
+	padding-bottom: 25px;
+	padding-left: 150px;
+	}
+
+.sa-table{
+	overflow-y: auto;
+	height: 500px;
+	}
+		       
+
+.table-data{
+	font-size: 27px;
+	border-collapse: collapse;	
+	background-color: white;
+	border: 2px solid #9A8BC7;
+	   }
+
+
+.table-data tr:nth-of-type(even){
+    	background-color: #f2f2f2;
+				}
+
+
+.table-headers{
+	text-align: left;
+	padding-bottom: 15px;
+	padding-top:    15px;
+	padding-left:   10px;
+	padding-right:  10px;
+	position: sticky;
+	top: 0;
+	background-color: #9A8BC7 ;
+	      } 	
+			
+
+.id_name{
+	padding-right: 90px; 
+	padding-left:  10px;
+	}
+
+.commission{
+	text-align: right;
+	padding-right: 10px;
+	   }
+			 
+.edit{
+	padding-left: 50px;
+	padding-right: 20px;
+	margin: 0px;
+	color: blue;
+     }
+
+.delete{
+	padding-right: 10px;
+	margin: 0px;
+       }
+
+       
+.clear{
+	margin-top: 20px;
+	margin-right: 280px;
+	background-color: #CCCCFF;
+      }
+	
+.submit{
+	background-color: #CCCCFF;
+       }
+
+		 
+
+.buttonColor{
+	background-color: #CCCCFF;
+	font-size: 20px;
+	    }
+			  
+
+.modalstyle{
+	margin-top: 350px;
+	margin-left: 940px;
+	width: 400px;
+	background-color: white;		
+	   }
+
+.formheader{
+	margin-top: 0px;	
+	color: #9A8BC7;
+			}
+
+.modallabel{
+	font-size: 22px;
+	padding-right: 30px;
+	   }
+
+.newsalabel{
+	font-size: 22px;
+	padding-left: 150px;
+	   }
+
+
+.newsaclear{
+	margin-top: 20px;
+	margin-right: 280px;
+	background-color: #CCCCFF;
+	margin-left: 150px;
+	   }
+
+
+.textbox{
+	font-size: 22px;
+	width: 220px;
+	height: 30px;	
+	}
+   
+
+

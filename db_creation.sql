@@ -22,7 +22,7 @@ CREATE TABLE quotes (
   status ENUM('draft', 'finalized', 'sanctioned', 'ordered'),
   discountType ENUM('percentage', 'amount'),
   discountAmt DECIMAL(10,2) DEFAULT 0.0,
-  date DATETIME DEFAULT getdate(),
+  date DATETIME DEFAULT current_timestamp(),
   commission DECIMAL(10,2) default 0.00,
   FOREIGN KEY (associateID) REFERENCES sales_associates(id)
 );

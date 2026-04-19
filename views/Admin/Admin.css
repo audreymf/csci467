@@ -19,21 +19,21 @@
 .bar form {	
 	margin: 0;
 	padding: 0;	
-	  }
+	     }
 
 .switch{
    	font-size: 20px;
 	padding: 8px 20px;
 	cursor: pointer;	
 	background-color: white;
-	}
+	   }
 		   
 
 .header-box{
 	display: flex;
 	margin-top: 20px;
 	padding-left: 30px;	
-	   }
+	       }
 			
 
 .header{
@@ -42,12 +42,12 @@
 	margin-top: 40px;
 	padding-bottom: 25px;
 	padding-left: 150px;
-	}
+	   }
 
 .sa-table{
 	overflow-y: auto;
 	height: 500px;
-	}
+	     }
 		       
 
 .table-data{
@@ -55,12 +55,13 @@
 	border-collapse: collapse;	
 	background-color: white;
 	border: 2px solid #9A8BC7;
-	   }
+	       }
 
 
 .table-data tr:nth-of-type(even){
     	background-color: #f2f2f2;
-				}
+				               }
+		
 
 
 .table-headers{
@@ -72,18 +73,23 @@
 	position: sticky;
 	top: 0;
 	background-color: #9A8BC7 ;
-	      } 	
+	         } 
 			
 
 .id_name{
 	padding-right: 90px; 
 	padding-left:  10px;
-	}
+	max-width: 370px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	    }
 
 .commission{
 	text-align: right;
 	padding-right: 10px;
-	   }
+	      }
+
 			 
 .edit{
 	padding-left: 50px;
@@ -96,15 +102,15 @@
 	padding-right: 10px;
 	margin: 0px;
        }
-
        
 .clear{
 	margin-top: 20px;
-	margin-right: 280px;
+	margin-right: 245px;
 	background-color: #CCCCFF;
       }
 	
 .submit{
+	margin-top:20px;
 	background-color: #CCCCFF;
        }
 
@@ -113,15 +119,21 @@
 .buttonColor{
 	background-color: #CCCCFF;
 	font-size: 20px;
-	    }
-			  
+	        }
 
+.view{
+	background-color:#CCCCFF;
+	font-size: 20px;
+	margin-left: 50px;
+	margin-right: 20px;
+     }
+			  
 .modalstyle{
 	margin-top: 350px;
-	margin-left: 940px;
+	margin-left: 1025px;
 	width: 400px;
 	background-color: white;		
-	   }
+	      }
 
 .formheader{
 	margin-top: 0px;	
@@ -131,27 +143,33 @@
 .modallabel{
 	font-size: 22px;
 	padding-right: 30px;
-	   }
+	       }
 
 .newsalabel{
 	font-size: 22px;
 	padding-left: 150px;
-	   }
+	       }
 
 
 .newsaclear{
 	margin-top: 20px;
-	margin-right: 280px;
+	margin-right: 250px;
 	background-color: #CCCCFF;
 	margin-left: 150px;
-	   }
-
+	       }
 
 .textbox{
 	font-size: 22px;
 	width: 220px;
 	height: 30px;	
-	}
-   
+	    }
 
+.labelc{
+	color: #9A8BC7;
+       }
 
+.error{
+	color: red;
+	padding-left: 35px;
+	font-size: 30px;
+      }

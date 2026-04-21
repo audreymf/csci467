@@ -1,37 +1,25 @@
 <?php
-require '../config/db.php';
-require '../backend/order_logic.php';
+require_once 'api_client.php';
 
-// Validate the quote ID from URL
 $quoteId = $_GET['id'] ?? null;
 if (!$quoteId || !ctype_digit((string)$quoteId)) {
     die('Invalid quote ID.');
 }
 $quoteId = (int)$quoteId;
-
-// Make sure the quote exists and is sanctioned
-$stmt = $pdo->prepare("
-    SELECT q.*, c.name AS customer_name, c.email AS customer_email,
-           sa.id AS associate_id, sa.name AS associate_name
-    FROM quotes q
-    JOIN customers c ON q.customerID = c.id
-    JOIN sales_associates sa ON q.associateID = sa.id
-    WHERE q.id = ? AND q.status = 'sanctioned'
-");
-$stmt->execute([$quoteId]);
-$quote = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$quote) {
-    die('Quote not found or not in sanctioned status.');
-}
-
 $errors = [];
 $confirmation = null;
 
-// Handle form submission
+$quoteRes = apiRequest('GET', '/' . $quoteId);
+$quote = ($quoteRes['status'] >= 200 && $quoteRes['status'] < 300 && is_array($quoteRes['data']))
+    ? $quoteRes['data']
+    : null;
+
+if (!$quote || ($quote['status'] ?? '') !== 'sanctioned') {
+    die('Quote not found or not in sanctioned status.');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    $discountType  = $_POST['final_discount_type'] ?? '';
+    $discountType = $_POST['final_discount_type'] ?? '';
     $discountValue = filter_input(INPUT_POST, 'final_discount_value', FILTER_VALIDATE_FLOAT);
 
     if (!in_array($discountType, ['', 'percentage', 'amount'], true)) {
@@ -45,85 +33,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $discountValue   = $discountValue ?: 0.0;
-        $sanctionedTotal = (float)$quote['total'];
+        $res = apiRequest('POST', '/' . $quoteId . '/order', [
+            'finalDiscountType' => $discountType,
+            'finalDiscountAmt' => $discountValue ?: 0,
+            'commissionRate' => 10
+        ]);
 
-        // Calculate final amount after any additional discount
-        if ($discountType === 'percentage') {
-            $finalAmount = round($sanctionedTotal * (1 - $discountValue / 100), 2);
-        } elseif ($discountType === 'amount') {
-            $finalAmount = round(max(0, $sanctionedTotal - $discountValue), 2);
+        if ($res['status'] >= 200 && $res['status'] < 300) {
+            $confirmation = [
+                'quote_id' => $quoteId,
+                'customer_id' => (int)($quote['customerID'] ?? 0),
+                'associate_id' => (int)($quote['associateID'] ?? 0),
+                'sanctioned_total' => (float)$quote['total'],
+                'discount_type' => $discountType,
+                'discount_value' => (float)($discountValue ?: 0),
+                'final_amount' => (float)($res['data']['finalAmount'] ?? 0),
+                'processing_date' => $res['data']['processingDate'] ?? '',
+                'commission_rate' => (float)($res['data']['commissionRate'] ?? 0),
+                'commission_amount' => (float)($res['data']['commissionAmount'] ?? 0)
+            ];
         } else {
-            $finalAmount = $sanctionedTotal;
-        }
-
-        // Call the external processing system to get processingDate and commissionRate
-        $external = callExternalProcessingSystem($quoteId, $finalAmount, $quote);
-
-        if ($external === null) {
-            $errors[] = 'Could not reach the external processing system. Please try again.';
-        } else {
-            $processingDate   = $external['processingDate'];
-            $commissionRate   = (float)$external['commissionRate'];
-            $commissionAmount = round($finalAmount * $commissionRate / 100, 2);
-
-            // Save everything in a transaction
-            $pdo->beginTransaction();
-            try {
-                // Insert purchase order
-                $pdo->prepare("
-                    INSERT INTO purchase_orders
-                        (quoteID, finalDiscountType, finalDiscountValue, finalAmount,
-                         processingDate, commissionRate, commissionAmount, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
-                ")->execute([
-                    $quoteId,
-                    $discountType ?: null,
-                    $discountType ? $discountValue : null,
-                    $finalAmount,
-                    $processingDate,
-                    $commissionRate,
-                    $commissionAmount
-                ]);
-                $purchaseOrderId = (int)$pdo->lastInsertId();
-
-                // Add commission to the associate's total
-                $pdo->prepare("UPDATE sales_associates SET commission = commission + ? WHERE id = ?")
-                    ->execute([$commissionAmount, $quote['associate_id']]);
-
-                // Mark quote as ordered
-                $pdo->prepare("UPDATE quotes SET status = 'ordered', ordered_at = NOW() WHERE id = ?")
-                    ->execute([$quoteId]);
-
-                $pdo->commit();
-
-                // Store confirmation details for display
-                $confirmation = [
-                    'purchase_order_id' => $purchaseOrderId,
-                    'quote_id'          => $quoteId,
-                    'customer_name'     => $quote['customer_name'],
-                    'associate_name'    => $quote['associate_name'],
-                    'sanctioned_total'  => $sanctionedTotal,
-                    'discount_type'     => $discountType,
-                    'discount_value'    => $discountValue,
-                    'final_amount'      => $finalAmount,
-                    'processing_date'   => $processingDate,
-                    'commission_rate'   => $commissionRate,
-                    'commission_amount' => $commissionAmount,
-                ];
-
-            } catch (Exception $e) {
-                $pdo->rollBack();
-                $errors[] = 'A database error occurred. Please try again.';
-            }
+            $errors[] = 'Order conversion failed. Please try again.';
         }
     }
 }
 
-// Load line items for display
-$itemsStmt = $pdo->prepare("SELECT * FROM line_items WHERE quoteID = ? ORDER BY id");
-$itemsStmt->execute([$quoteId]);
-$items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+$items = $quote['items'] ?? [];
 
 include_once 'header.php';
 ?>
@@ -131,16 +66,15 @@ include_once 'header.php';
 <?php if ($confirmation): ?>
 <!-- Purchase Confirmation -->
 <div class="flash success">
-    Purchase Order #<?= (int)$confirmation['purchase_order_id'] ?> created successfully.
+    Quote #<?= (int)$confirmation['quote_id'] ?> converted to order successfully.
 </div>
 
 <div class="form-box" style="max-width:600px;">
     <h3 style="margin-top:0;">Order Confirmation</h3>
     <table style="box-shadow:none;">
-        <tr><td><strong>Purchase Order ID</strong></td><td>#<?= (int)$confirmation['purchase_order_id'] ?></td></tr>
         <tr><td><strong>Quote ID</strong></td>          <td>#<?= (int)$confirmation['quote_id'] ?></td></tr>
-        <tr><td><strong>Customer</strong></td>          <td><?= htmlspecialchars($confirmation['customer_name']) ?></td></tr>
-        <tr><td><strong>Sales Associate</strong></td>   <td><?= htmlspecialchars($confirmation['associate_name']) ?></td></tr>
+        <tr><td><strong>Customer</strong></td>          <td>#<?= (int)$confirmation['customer_id'] ?></td></tr>
+        <tr><td><strong>Sales Associate</strong></td>   <td>#<?= (int)$confirmation['associate_id'] ?></td></tr>
         <tr><td><strong>Sanctioned Total</strong></td>  <td>$<?= number_format($confirmation['sanctioned_total'], 2) ?></td></tr>
         <?php if ($confirmation['discount_type']): ?>
         <tr>
@@ -171,7 +105,7 @@ include_once 'header.php';
 <?php endforeach; ?>
 
 <div class="info-box">
-    <strong>Customer:</strong> <?= htmlspecialchars($quote['customer_name']) ?><br>
+    <strong>Customer:</strong> #<?= (int)($quote['customerID'] ?? 0) ?><br>
     <strong>Sanctioned Total:</strong> $<?= number_format((float)$quote['total'], 2) ?>
 </div>
 

@@ -3,13 +3,6 @@ const express = require('express')
 const app = express()
 var port = process.env.PORT || 3000;
 
-const apiRoutes = require('./backend/api');
-
-app.use(express.json());
-app.use('/api/quotes', apiRoutes);
-
-
-
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 

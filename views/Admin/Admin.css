@@ -12,13 +12,13 @@
 
 .body1{
 	background-color: #F9F9F9;
-	margin: 0;
-	padding: 0;
+	margin: 0px;
+	padding: 0px;
       }
 
 .bar form {	
-	margin: 0;
-	padding: 0;	
+	margin: 0px;
+	padding: 0px;	
 	     }
 
 .switch{
@@ -26,8 +26,7 @@
 	padding: 8px 20px;
 	cursor: pointer;	
 	background-color: white;
-	   }
-		   
+	   }	   
 
 .header-box{
 	display: flex;
@@ -35,21 +34,19 @@
 	padding-left: 30px;	
 	       }
 			
-
 .header{
 	font-size: 35px;
 	color: #9A8BC7;
 	margin-top: 40px;
 	padding-bottom: 25px;
-	padding-left: 150px;
+	padding-left: 130px;
 	   }
 
 .sa-table{
 	overflow-y: auto;
-	height: 500px;
+	height: 500px; 
 	     }
 		       
-
 .table-data{
 	font-size: 27px;
 	border-collapse: collapse;	
@@ -57,13 +54,10 @@
 	border: 2px solid #9A8BC7;
 	       }
 
-
 .table-data tr:nth-of-type(even){
     	background-color: #f2f2f2;
 				               }
 		
-
-
 .table-headers{
 	text-align: left;
 	padding-bottom: 15px;
@@ -74,12 +68,11 @@
 	top: 0;
 	background-color: #9A8BC7 ;
 	         } 
-			
-
+		
 .id_name{
 	padding-right: 90px; 
 	padding-left:  10px;
-	max-width: 370px;
+	max-width: 275px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -89,8 +82,7 @@
 	text-align: right;
 	padding-right: 10px;
 	      }
-
-			 
+	 
 .edit{
 	padding-left: 50px;
 	padding-right: 20px;
@@ -114,8 +106,6 @@
 	background-color: #CCCCFF;
        }
 
-		 
-
 .buttonColor{
 	background-color: #CCCCFF;
 	font-size: 20px;
@@ -131,12 +121,11 @@
 .modalstyle{
 	margin-top: 350px;
 	margin-left: 1025px;
-	width: 400px;
+	width: 26%;
 	background-color: white;		
 	      }
 
-.formheader{
-	margin-top: 0px;	
+.formheader{	
 	color: #9A8BC7;
 			}
 
@@ -147,15 +136,14 @@
 
 .newsalabel{
 	font-size: 22px;
-	padding-left: 150px;
+	padding-left: 130px;
 	       }
-
 
 .newsaclear{
 	margin-top: 20px;
 	margin-right: 250px;
 	background-color: #CCCCFF;
-	margin-left: 150px;
+	margin-left: 130px;
 	       }
 
 .textbox{

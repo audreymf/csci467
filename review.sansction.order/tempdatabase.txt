@@ -1,0 +1,94 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS role4db;
+USE role4db;
+
+-- SALES ASSOCIATES (Role-based access)
+CREATE TABLE sales_associates (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  userID VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  address VARCHAR(200),
+  commission DECIMAL(10,2) DEFAULT 0.00,
+  access ENUM('hq', 'sales', 'admin') DEFAULT 'sales',
+  is_approved BOOLEAN DEFAULT FALSE
+);
+
+-- CUSTOMERS (Required for HQ display + screenshot)
+
+CREATE TABLE customers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100),
+  phone VARCHAR(50)
+);
+
+
+-- QUOTES (Full workflow: draft → finalized → sanctioned → ordered)
+
+CREATE TABLE quotes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  associateID INT NOT NULL,
+  customerID INT NOT NULL,
+  email VARCHAR(100) NOT NULL,
+
+  -- Workflow status
+  status ENUM('draft','finalized','sanctioned','ordered') DEFAULT 'draft',
+
+  -- Discounts
+  discountType ENUM('percentage','amount'),
+  discountAmt DECIMAL(10,2) DEFAULT 0.00,
+
+  -- Required totals
+  subtotal DECIMAL(10,2) DEFAULT 0.00,
+  discountAmount DECIMAL(10,2) DEFAULT 0.00,
+  total DECIMAL(10,2) DEFAULT 0.00,
+
+  -- Required timestamps
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  finalized_at DATETIME,
+  sanctioned_at DATETIME,
+  ordered_at DATETIME,
+
+  FOREIGN KEY (associateID) REFERENCES sales_associates(id),
+  FOREIGN KEY (customerID) REFERENCES customers(id)
+);
+
+
+-- LINE ITEMS (Each quote can have multiple items)
+CREATE TABLE line_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  quoteID INT NOT NULL,
+  item VARCHAR(200),
+  price DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (quoteID) REFERENCES quotes(id) ON DELETE CASCADE
+);
+
+-- NOTES (Secret + visible notes)
+CREATE TABLE notes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  quoteID INT NOT NULL,
+  content TEXT,
+  is_secret BOOLEAN DEFAULT FALSE,
+  authorType ENUM('associate','hq') DEFAULT 'associate',
+  FOREIGN KEY (quoteID) REFERENCES quotes(id) ON DELETE CASCADE
+);
+
+-- PURCHASE ORDERS (Created by Role 4)
+CREATE TABLE purchase_orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  quoteID INT NOT NULL,
+
+  finalDiscountType ENUM('percentage','amount'),
+  finalDiscountValue DECIMAL(10,2),
+
+  finalAmount DECIMAL(10,2),
+  processingDate DATE,
+
+  commissionRate DECIMAL(5,2),
+  commissionAmount DECIMAL(10,2),
+
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (quoteID) REFERENCES quotes(id)
+);

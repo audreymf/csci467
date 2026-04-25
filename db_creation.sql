@@ -1,6 +1,3 @@
--- Database creation!
-create database quote_system;
-
 -- Sales Associate table
 CREATE TABLE sales_associates (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -27,7 +24,7 @@ CREATE TABLE quotes (
   FOREIGN KEY (associateID) REFERENCES sales_associates(id)
 );
 
---Line Itemes Table
+-- Line Items Table
 CREATE TABLE line_items(
   id INT AUTO_INCREMENT PRIMARY KEY,
   quoteID INT NOT NULL,
@@ -42,5 +39,5 @@ CREATE TABLE notes (
   quoteID INT NOT NULL,
   content TEXT,
   is_secret BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY (quoteID) REFERENCES quotes(id) on delete cascade
+  FOREIGN KEY (quoteID) REFERENCES quotes(id) ON DELETE CASCADE
 );

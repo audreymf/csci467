@@ -8,9 +8,8 @@ CREATE TABLE sales_associates (
   userID VARCHAR(50) UNIQUE NOT NULL,
   password VARCHAR(100) NOT NULL,
   address VARCHAR(200),
-  commission DECIMAL(10,2) DEFAULT 0.0,
+  commission DECIMAL(10,2) DEFAULT 0.0 NOT NULL,
   access ENUM('hq', 'sales', 'admin'),
-  is_approved BOOLEAN DEFAULT FALSE 
 );
 
 -- Quotes Table
@@ -23,7 +22,8 @@ CREATE TABLE quotes (
   discountType ENUM('percentage', 'amount'),
   discountAmt DECIMAL(10,2) DEFAULT 0.0,
   date DATETIME DEFAULT current_timestamp(),
-  commission DECIMAL(10,2) default 0.00,
+  commission DECIMAL(10,2) default 0.00 NOT NULL,
+  subtotal DECIMAL(10,2),
   FOREIGN KEY (associateID) REFERENCES sales_associates(id)
 );
 
@@ -38,9 +38,9 @@ CREATE TABLE line_items(
 
 -- Notes Table
 CREATE TABLE notes (
-  id int AUTO_INCREMENT PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   quoteID INT NOT NULL,
-  content text,
-  is_secret boolean DEFAULT FALSE,
+  content TEXT,
+  is_secret BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (quoteID) REFERENCES quotes(id) on delete cascade
 );

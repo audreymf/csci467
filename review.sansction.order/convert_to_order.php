@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'quote_id' => $quoteId,
                 'customer_id' => (int)($quote['customerID'] ?? 0),
                 'associate_id' => (int)($quote['associateID'] ?? 0),
-                'sanctioned_total' => (float)$quote['total'],
+                'sanctioned_total' => (float)($quote['subtotal'] ?? $quote['total']),
                 'discount_type' => $discountType,
                 'discount_value' => (float)($discountValue ?: 0),
                 'final_amount' => (float)($res['data']['finalAmount'] ?? 0),
@@ -75,7 +75,7 @@ include_once 'header.php';
         <tr><td><strong>Quote ID</strong></td>          <td>#<?= (int)$confirmation['quote_id'] ?></td></tr>
         <tr><td><strong>Customer</strong></td>          <td>#<?= (int)$confirmation['customer_id'] ?></td></tr>
         <tr><td><strong>Sales Associate</strong></td>   <td>#<?= (int)$confirmation['associate_id'] ?></td></tr>
-        <tr><td><strong>Sanctioned Total</strong></td>  <td>$<?= number_format($confirmation['sanctioned_total'], 2) ?></td></tr>
+        <tr><td><strong>Sanctioned Total</strong></td>  <td>$<?= number_format((float)($quote['subtotal'] ?? $confirmation['sanctioned_total']), 2) ?></td></tr>
         <?php if ($confirmation['discount_type']): ?>
         <tr>
             <td><strong>Final Discount</strong></td>
@@ -106,7 +106,7 @@ include_once 'header.php';
 
 <div class="info-box">
     <strong>Customer:</strong> #<?= (int)($quote['customerID'] ?? 0) ?><br>
-    <strong>Sanctioned Total:</strong> $<?= number_format((float)$quote['total'], 2) ?>
+    <strong>Sanctioned Total:</strong> $<?= number_format((float)($quote['subtotal'] ?? $quote['total']), 2) ?>
 </div>
 
 <!-- Line items (read-only at this stage) -->

@@ -1,7 +1,7 @@
 <?php
 
-require '../connection/server_connect.php';
-require '../connection/php_functions.php';
+require './functions/server_connect.php';
+require './functions/php_functions.php';
 
 validateLogin();
 checkAccessLevel('sales');
@@ -65,8 +65,8 @@ else if(isset($_POST['deleteQuote']))
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="./salesassociate.js" defer></script>
-<link rel="stylesheet" href="./salesassociate.css">
+<script src="./js/salesassociate.js" defer></script>
+<link rel="stylesheet" href="./css/salesassociate.css">
 <title>CSCI 467 Salesperson Interface</title>
 
 </head>
@@ -263,7 +263,6 @@ foreach($customerInfo as $customer)
 
 <select name="status" class="form-select-lg">
 <option value="draft">Draft</option>
-<option value="ordered">Ordered</option>
 <option value="finalized">Finalized</option>
 </select>
 
@@ -440,9 +439,9 @@ if(isset($_POST['editquote']) || isset($_POST['deleteService']) || $checkExists 
 
 if(isset($_POST['editquote']) || isset($_POST['deleteService']) || $checkExists > 0)
 {
-  $statustypes = ['draft', 'ordered', 'finalized'];
+  $statustypes = ['draft', 'finalized'];
 
-  for($i = 0; $i < 3; $i++)
+  for($i = 0; $i < 2; $i++)
   {
      if($statustypes[$i] == $quoteInfo['status'])
      {
@@ -509,19 +508,19 @@ if(isset($_POST['editquote']) || isset($_POST['deleteService']) || $checkExists 
 
 <div class="header">
 
-<span>Sanctioned Quotes</span>
+<span>Completed/Ordered Quotes</span>
 
 </div> <!-- End Header -->
 
 <?php
 
-$count = checkSanctioned($pdo, $_SESSION['id']);
+$count = checkOrdered($pdo, $_SESSION['id']);
 
 if($count > 0)
 {
    echo "<div class='scrollablequotes'>";
 
-   $finalQuotes = retrieveSanctionedInfo($pdo, $_SESSION['id']);
+   $finalQuotes = retrieveOrderedInfo($pdo, $_SESSION['id']);
 
    foreach($finalQuotes as $final)
    {
@@ -553,7 +552,7 @@ else
 
 <div class="header">
 
-<span>Finalized Quotes</span>
+<span>Finalized & Sanctioned Quotes</span>
 
 </div> <!-- End Header -->
 
@@ -570,7 +569,7 @@ if($count > 0)
 
    foreach($finalQuotes as $final)
    {
-     echo "<button type='button' class='custombutton'><strong>Quote ID: " . $final['id'] . "</strong><br>Finalized On <span> " . $final['date'] . "</span></button>";
+     echo "<button type='button' class='custombutton'><strong>Quote ID: " . $final['id'] . "</strong><br>Current Status: <span> " . $final['status'] . "</span></button>";
    }
 
   echo "</div>"; 
@@ -579,7 +578,7 @@ if($count > 0)
 else
 {
    echo "<div class='nofinalizedfound'>";
-   echo "<strong>No Finalized Quotes Found for User, " . $_SESSION['name'] . "</strong>";
+   echo "<strong>No Finalized or Sanctioned Quotes Found for User, " . $_SESSION['name'] . "</strong>";
    echo "</div>";
 }
 

@@ -123,3 +123,91 @@ input::placeholder
 {
   margin-bottom: 7%;
 }
+input::placeholder
+{
+  text-align: center;
+}
+
+.forgotpassword
+{
+  text-align: right;
+  padding: 0px;
+  margin: 0px;
+  margin-bottom: 20px;
+}
+
+.logintext
+{
+  text-align: center;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  margin-bottom: 25px;
+}
+
+.textfield1, .textfield2
+{
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+.textfield1
+{
+  margin-bottom: 25px;
+}
+
+.textfield2
+{
+  margin-bottom: 10px;
+}
+
+.textfield3
+{
+  width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+
+}
+
+.submitbutton
+{
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  background-color: #CBC3E3;
+  background-color: #9A8BC7;
+}
+
+.submitbutton:hover
+{
+  background-color: #CBC3E3;
+}
+
+.errormessage
+{
+  color: red;
+  text-align: center;
+}
+
+.successmessage
+{
+  color: green;
+  text-align: center;
+}
+
+.noaccount
+{
+  margin-bottom: 13%;
+}
+
+.returnbtn
+{
+  margin-bottom: 7%;
+}

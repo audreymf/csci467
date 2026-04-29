@@ -1,7 +1,7 @@
 <?php
 
-require 'server_connect.php';
-require 'php_functions.php';
+require './functions/server_connect.php';
+require './functions/php_functions.php';
 
 session_start();
 
@@ -10,7 +10,7 @@ session_start();
 <html>
 
 <head>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="./css/login.css">
 <title>CSCI 467 Forgot Password Page</title>
 </head>
 
@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 {
   if(empty($_POST['email']))
   {
-	echo "<p class='errormessage'>Enter an email dummy</p>";
+	echo "<p class='errormessage'>Enter a Valid Email Address</p>";
   }
   else
   {
@@ -44,7 +44,7 @@ else
 }
 ?>
 
-<input type="text" class="textfield1" name="email" placeholder="Enter Email">
+<input type="email" class="textfield1" name="email" placeholder="Enter Email">
 
 <input type="submit" class="submitbutton" name="submit" value="Request Password Reset">
 

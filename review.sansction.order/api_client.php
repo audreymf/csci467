@@ -55,7 +55,7 @@ function quote_get_line_items(PDO $pdo, int $quoteId): array
 function quote_get_by_id(PDO $pdo, int $id): ?array
 {
     $stmt = $pdo->prepare(
-        'SELECT id, associateID, customerID, email, status, discountType, discountAmt, `date`, commission
+        'SELECT id, associateID, customerID, email, status, discountType, discountAmt, subtotal, `date`, commission
          FROM quotes WHERE id = ?'
     );
     $stmt->execute([$id]);
@@ -210,9 +210,9 @@ function quote_api_post_sanction(PDO $pdo, int $id, array $payload): array
     }
 
     $upd = $pdo->prepare(
-        'UPDATE quotes SET status = ?, discountType = ?, discountAmt = ? WHERE id = ?'
+    'UPDATE quotes SET status = ?, discountType = ?, discountAmt = ?, subtotal = ? WHERE id = ?'
     );
-    $upd->execute(['sanctioned', $normalizedType, (float)($discountAmt ?: 0), $id]);
+    $upd->execute(['sanctioned', $normalizedType, (float)($discountAmt ?: 0), $totals['total'], $id]);
 
     $items = quote_get_line_items($pdo, $id);
     $totals = quote_compute_totals($items, $normalizedType, (float)($discountAmt ?: 0));
@@ -271,7 +271,12 @@ function quote_api_post_order(PDO $pdo, int $id, array $payload): array
     $items = quote_get_line_items($pdo, $id);
     $effType = $normalizedType ?? ($quote['discountType'] ?: null);
     $effAmt = $normalizedType ? (float)($finalDiscountAmt ?: 0) : (float)($quote['discountAmt'] ?? 0);
-    $totals = quote_compute_totals($items, $effType, $effAmt);
+    $totals = quote_compute_totals(
+    $items,
+    $effType,
+    $effAmt,
+    (isset($quote['subtotal']) ? (float)$quote['subtotal'] : null)
+    );
     $commission = round($totals['total'] * ((float)$commissionRate / 100), 2);
 
     $upd = $pdo->prepare(

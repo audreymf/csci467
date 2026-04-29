@@ -8,7 +8,10 @@ require_once __DIR__ . '/db.php';
 function quote_log_fake_email(string $eventName, string $email, array $payload): void
 {
     unset($payload['secretNotes'], $payload['notes']);
-    error_log('EMAIL_EVENT:' . $eventName . ' To:' . $email . ' ' . json_encode($payload));
+
+    $message = 'EMAIL_EVENT:' . $eventName . ' To:' . $email . ' ' . json_encode($payload) . PHP_EOL;
+
+    file_put_contents(__DIR__ . '/email_log.txt', $message, FILE_APPEND);
 }
 
 /**

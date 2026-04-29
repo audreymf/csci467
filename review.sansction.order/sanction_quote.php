@@ -1,84 +1,46 @@
 <?php
-require '../config/db.php';
-require '../backend/order_logic.php';
+require_once 'api_client.php';
 
-// Validate the quote ID from URL
 $quoteId = $_GET['id'] ?? null;
 if (!$quoteId || !ctype_digit((string)$quoteId)) {
     die('Invalid quote ID.');
 }
 $quoteId = (int)$quoteId;
-
-// Make sure the quote exists and is finalized
-$stmt = $pdo->prepare("
-    SELECT q.*, c.name AS customer_name
-    FROM quotes q
-    JOIN customers c ON q.customerID = c.id
-    WHERE q.id = ? AND q.status = 'finalized'
-");
-// $stmt->execute([$quoteId, 'finalized']);
-// $quote = $stmt->fetch(PDO::FETCH_ASSOC);
-
-$reload = $pdo->prepare("
-    SELECT q.*, c.name AS customer_name
-    FROM quotes q
-    JOIN customers c ON q.customerID = c.id
-    WHERE q.id = ? AND q.status = 'finalized'
-");
-$reload->execute([$quoteId]);
-$quote = $reload->fetch(PDO::FETCH_ASSOC);
-
-
-
-
-
-if (!$quote) {
-    die('Quote not found or not in finalized status.');
-}
-
 $errors = [];
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_note') {
     $note = trim($_POST['note_content'] ?? '');
     if ($note !== '') {
-        $pdo->prepare("
-            INSERT INTO notes (quoteID, content, is_secret, authorType)
-            VALUES (?, ?, 1, 'hq')
-        ")->execute([$quoteId, $note]);
+        $res = apiRequest('POST', '/' . $quoteId . '/notes', [
+            'content' => $note,
+            'is_secret' => 1
+        ]);
+        if ($res['status'] < 200 || $res['status'] >= 300) {
+            $errors[] = 'Failed to add note.';
+        }
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_item') {
-
-    $itemId   = filter_input(INPUT_POST, 'item_id', FILTER_VALIDATE_INT);
+    $itemId = filter_input(INPUT_POST, 'item_id', FILTER_VALIDATE_INT);
     $itemName = trim($_POST['item_name'] ?? '');
     $itemPrice = filter_input(INPUT_POST, 'item_price', FILTER_VALIDATE_FLOAT);
 
     if (!$itemId || $itemName === '' || $itemPrice === false || $itemPrice < 0) {
         $errors[] = 'Invalid item data. Check all fields.';
     } else {
-        $check = $pdo->prepare("SELECT id FROM line_items WHERE id = ? AND quoteID = ?");
-        $check->execute([$itemId, $quoteId]);
-        if (!$check->fetch()) {
-            $errors[] = 'Line item does not belong to this quote.';
-        } else {
-            $pdo->prepare("UPDATE line_items SET item = ?, price = ? WHERE id = ?")
-                ->execute([$itemName, $itemPrice, $itemId]);
-
-            recalculateQuoteTotals($pdo, $quoteId);
-
-            $stmt->execute([$quoteId]);
-            $quote = $stmt->fetch(PDO::FETCH_ASSOC);
+        $res = apiRequest('PUT', '/' . $quoteId . '/line-items/' . $itemId, [
+            'item' => $itemName,
+            'price' => (float)$itemPrice
+        ]);
+        if ($res['status'] < 200 || $res['status'] >= 300) {
+            $errors[] = 'Failed to update line item.';
         }
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sanction') {
-
-    $discountType  = $_POST['discount_type'] ?? '';
+    $discountType = $_POST['discount_type'] ?? '';
     $discountValue = filter_input(INPUT_POST, 'discount_value', FILTER_VALIDATE_FLOAT);
 
     if (!in_array($discountType, ['', 'percentage', 'amount'], true)) {
@@ -92,24 +54,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sanct
     }
 
     if (empty($errors)) {
-        sanctionQuote($pdo, $quoteId, [
-            'type'  => $discountType,
-            'value' => $discountValue ?: 0
+        $res = apiRequest('POST', '/' . $quoteId . '/sanction', [
+            'discountType' => $discountType,
+            'discountAmt' => $discountValue ?: 0
         ]);
-        $_SESSION['flash'] = ['type' => 'success', 'message' => "Quote #$quoteId sanctioned successfully."];
-        header("Location: review_quotes.php?status=sanctioned");
-        exit;
+        if ($res['status'] >= 200 && $res['status'] < 300) {
+            $_SESSION['flash'] = ['type' => 'success', 'message' => "Quote #$quoteId sanctioned successfully."];
+            header("Location: review_quotes.php?status=sanctioned");
+            exit;
+        }
+        $errors[] = 'Failed to sanction quote.';
     }
 }
 
+$quoteResponse = apiRequest('GET', '/' . $quoteId);
+$quote = ($quoteResponse['status'] >= 200 && $quoteResponse['status'] < 300 && is_array($quoteResponse['data']))
+    ? $quoteResponse['data']
+    : null;
 
-$itemsStmt = $pdo->prepare("SELECT * FROM line_items WHERE quoteID = ? ORDER BY id");
-$itemsStmt->execute([$quoteId]);
-$items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+if (!$quote || ($quote['status'] ?? '') !== 'finalized') {
+    die('Quote not found or not in finalized status.');
+}
 
-$notesStmt = $pdo->prepare("SELECT * FROM notes WHERE quoteID = ? AND is_secret = 1 ORDER BY id DESC");
-$notesStmt->execute([$quoteId]);
-$secretNotes = $notesStmt->fetchAll(PDO::FETCH_ASSOC);
+$items = $quote['items'] ?? [];
+$secretNotes = array_values(array_filter($quote['notes'] ?? [], static function ($n) {
+    return !empty($n['is_secret']);
+}));
 
 include_once 'header.php';
 ?>
@@ -121,7 +91,7 @@ include_once 'header.php';
 <?php endforeach; ?>
 
 <div class="info-box">
-    <strong>Customer:</strong> <?= htmlspecialchars($quote['customer_name']) ?><br>
+    <strong>Customer:</strong> #<?= (int)($quote['customerID'] ?? 0) ?><br>
     <strong>Current Total:</strong> $<?= number_format((float)$quote['total'], 2) ?>
 </div>
 

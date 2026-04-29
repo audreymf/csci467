@@ -1,5 +1,5 @@
 <?php
-require '../config/db.php';
+require_once 'api_client.php';
 include_once 'header.php';
 
 // Only allow known statuses
@@ -16,17 +16,11 @@ if (!empty($_SESSION['flash'])) {
     unset($_SESSION['flash']);
 }
 
-// Get quotes for the selected status
-$stmt = $pdo->prepare("
-    SELECT q.id, q.status, q.total, q.created_at,
-           c.name AS customer_name
-    FROM quotes q
-    JOIN customers c ON q.customerID = c.id
-    WHERE q.status = ?
-    ORDER BY q.created_at DESC
-");
-$stmt->execute([$status]);
-$quotes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Get quotes for the selected status from API
+$response = apiRequest('GET', '/status/' . urlencode($status));
+$quotes = ($response['status'] >= 200 && $response['status'] < 300 && is_array($response['data']))
+    ? $response['data']
+    : [];
 ?>
 
 <h2>HQ Quote Review</h2>
@@ -47,8 +41,8 @@ $quotes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php foreach ($quotes as $q): ?>
     <tr>
         <td>#<?= (int)$q['id'] ?></td>
-        <td><?= htmlspecialchars($q['created_at']) ?></td>
-        <td><?= htmlspecialchars($q['customer_name']) ?></td>
+        <td><?= htmlspecialchars($q['date'] ?? '-') ?></td>
+        <td>Customer #<?= (int)($q['customerID'] ?? 0) ?></td>
         <td>$<?= number_format((float)$q['total'], 2) ?></td>
         <td>
             <?php if ($q['status'] === 'finalized'): ?>

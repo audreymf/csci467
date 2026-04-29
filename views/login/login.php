@@ -1,6 +1,6 @@
 <?php
-require 'server_connect.php';
-require_once 'php_functions.php';
+require './functions/server_connect.php';
+require_once './functions/php_functions.php';
 session_start();
 
 if($_SERVER['REQUEST_METHOD'] === "POST")
@@ -15,14 +15,14 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 		$validpassword = checkLogin($pdo, $submitted_email, $submitted_password);
 		if($validpassword == 1)
 		{
-			$status = checkApproval($pdo, $submitted_email);
-		        if($status == 1)
+			$status = 0; 
+		        if($status == 0)
 			{
 				$data = retrieveInfo($pdo, $submitted_email, $submitted_password);
 				
-				$_SESSION['FNAME'] = $data['fname'];
-				$_SESSION['LNAME'] = $data['lname'];
-				$_SESSION['access_level'] = $data['access_level'];
+				$_SESSION['name'] = $data['name'];
+				$_SESSION['id'] = $data['id'];
+				$_SESSION['access_level'] = $data['access'];
 				$_SESSION['login_authenticated'] = TRUE;
 
 				redirectClient($_SESSION['access_level']);
@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 <html>
 
 <head>
-<link rel="stylesheet" href="login.css">
+<link rel="stylesheet" href="./css/login.css">
 <title>CSCI 467 Login Page</title>
 </head>
 
@@ -50,7 +50,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 <form action="" method="POST">
 
 <h1 class="logintext">Account Login</h1>
-<p class="logintext">Please enter your email and password below to login</p>
+<p class="logintext">Please enter your username and password below to login</p>
 
 <?php
 if($_SERVER['REQUEST_METHOD'] === "POST")
@@ -66,7 +66,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 }
 ?>
 
-<input type="text" class="textfield1" name="email" placeholder="Enter Email">
+<input type="text" class="textfield1" name="email" placeholder="Enter Username">
 
 <input type="password" class="textfield2" name="password" placeholder="Password">
 
@@ -76,10 +76,12 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 
 </form>
 
-<p class="noaccount">Dont have an account? <a href="createaccount.php">Create one here</a></p>
-
+<!-- Removed account creation due to that being delegated to the administrator -->
+<!-- <p class="noaccount">Dont have an account? <a href="createaccount.php">Create one here</a></p> -->
+<p class="noaccount">Dont have an account? <a href="mailto:admin@groupb.com">Contact Your System Administrator</a></p>
 </div>
 
 </body>
 
 </html>
+

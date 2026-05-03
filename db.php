@@ -1,9 +1,11 @@
+//Connection to our database on hopper
 <?php
 $host = 'courses';
 $dbname = 'z1989163';
 $username = 'z1989163';
 $password = 'ege467';
 
+//PDO connection
 try {
     $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
     $pdo = new PDO($dsn, $username, $password, [

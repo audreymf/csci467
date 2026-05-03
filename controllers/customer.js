@@ -12,24 +12,13 @@ var legacy_db = mysql.createConnection({
   database: 'csci467'
 });
 
-// Connection to our created DB
-// I did not open this to public networks so it should work
-// with the specific login info included here
-/*var system_db = mysql.createConnection({
-  host: '10.168.191.95',
-  port: 3306,
-  user: 'team',
-  password: 'ege467',
-  database: 'quote_system'
-});*/
-
 // Throw error if we cannot connect to legacy DB
 legacy_db.connect(err => {
   if(err) throw err;
   console.log('Connected to legacy database');
 });
                   
-// sane for our DB
+// same for our DB
 system_db.connect(err => {
   if(err) throw err
   console.log('Connected to quote_system database');
@@ -44,36 +33,3 @@ module.exports = {
       result(rows);
   });
 }}
- /* 
-getSalesAssociates: async result => {
-    connection.query('SELECT * FROM sales_associates', function(err, rows){
-      if (err) throw err;
-      console.log('found ', rows.length, ' sales_associates');
-      result(rows);
-  });
-},
-
-getQuotes: async result => {
-  connection.query('SELECT * FROM quotes', function(err, rows){
-    if (err) throw err;
-    console.log('found ', rows.length, ' quotes');
-    result(rows);
-  });
-},
-
-getLineItems: async result => {
-  connection.query('SELECT * FROM line_items', function(err, rows){
-    if (err) throw err;
-    console.log('found ', rows.length, ' line_items');
-    result(rows);
-});
-},
-
-getNotes: async result => {
-  connection.query('SELECT * FROM notes', function(err, rows){
-    if (err) throw err;
-    console.log('found ', rows.length, ' notes');
-    result(rows);
-  });
-}
-}*/

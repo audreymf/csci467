@@ -41,3 +41,29 @@ CREATE TABLE notes (
   is_secret BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (quoteID) REFERENCES quotes(id) ON DELETE CASCADE
 );
+
+-- Insertions into sales_associates
+INSERT INTO sales_associates (name, userID, password, address, access)
+VALUES 
+('Audrey Fields', 'audreyf', 'password1', '1234 Audrey St', 'sales'),
+('Javon Cherry', 'javonc', 'password4', '1243 Javon St', 'hq'),
+('Damian Mendoza', 'damianm', 'password5', '1234 Damian St', 'admin');
+
+-- Insertions into quotes
+INSERT INTO quotes (associateID, customerID, email, status, discountType, discountAmt, commission)
+VALUES
+(1, 1, 'ibm@ibm.com', 'draft', 'percentage', 0.50, 30.00),
+(2, 50, 'euro@euro.com', 'ordered', 'amount', 50.00, 1615.00);
+
+-- Insertions into line_items
+INSERT INTO line_items (quoteID, item, price)
+VALUES
+(1, 'inspection', 50.00),
+(2, 'hydraulic repair', 10000.00),
+(4, 'system calibration', 200.00);
+
+-- Insertions into notes
+INSERT INTO notes (quoteID, content, is_secret)
+VALUES
+(1, 'add discount', 0),
+(2, 'determine service fee', 1);

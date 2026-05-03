@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+//Purchase order functionality
+// sends purchase order data
 module.exports = {
     processSample: async result => {
         var data = {

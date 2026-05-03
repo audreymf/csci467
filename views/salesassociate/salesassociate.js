@@ -115,6 +115,7 @@ const notesContainer = document.getElementById('notesContainerEdit');
 
 addNotesBtnEdit.addEventListener('click', () => {
 
+  //create all of the required elements
   const newNote = document.createElement('div');
   const newNoteBox = document.createElement('textarea');
   const deleteNoteButton = document.createElement('button');
@@ -122,6 +123,7 @@ addNotesBtnEdit.addEventListener('click', () => {
   const privOption = document.createElement('option');
   const pubOption = document.createElement('option');
 
+  //Add the different private and public options to the dropdown menu. Set their corresponding values
   privpubDropdown.className = 'form-select-sm';
   privpubDropdown.name = 'issecret[]';
   privOption.value = '1';
@@ -129,6 +131,7 @@ addNotesBtnEdit.addEventListener('click', () => {
   pubOption.value = '0';
   pubOption.textContent = 'Public';
 
+  //Append the public and private options to the dropdown
   privpubDropdown.appendChild(privOption);
   privpubDropdown.appendChild(pubOption);
 
@@ -136,10 +139,12 @@ addNotesBtnEdit.addEventListener('click', () => {
 
   newNote.className = 'newNote';
 
+  //Set the attributes for the delete button
   deleteNoteButton.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
   deleteNoteButton.className = 'deleteServiceBtn';
   deleteNoteButton.type = 'button';
 
+  //Set the attributes for the textbox
   newNoteBox.type = 'text';
   newNoteBox.placeholder = 'Enter a new Note';
   newNoteBox.name = 'notes[]';
@@ -147,16 +152,18 @@ addNotesBtnEdit.addEventListener('click', () => {
   newNoteBox.rows = '4';
   newNoteBox.cols = '50';
 
+  //Add an onclicklistener to the delete not button that deletes the note, dropdown, and delete button
   deleteNoteButton.addEventListener('click', () => {
     newNote.remove();
   });
 
   
-
+  //Append the elements to the newNote 
   newNote.appendChild(newNoteBox);
   newNote.appendChild(privpubDropdown);
   newNote.appendChild(deleteNoteButton);
 
+  //Append the newNote to the notes container
   notesContainer.appendChild(newNote);
 
 
@@ -167,6 +174,7 @@ const servicesContainerEdit = document.getElementById('editServices');
 
 addServiceBtnEdit.addEventListener('click', () => {
 
+  //Create the required elements
   const serviceRow = document.createElement('div');
   const newServiceDescription = document.createElement('input');
   const newServicePrice = document.createElement('input');
@@ -175,29 +183,35 @@ addServiceBtnEdit.addEventListener('click', () => {
 
   serviceRow.className = 'serviceRow';
 
+  //Set the attributes for the service text box
   newServiceDescription.type = 'text';
   newServiceDescription.placeholder = 'Enter Service Description';
   newServiceDescription.name = 'services[]';
   newServiceDescription.required = true;
 
+  //Set the attributes for the price text box
   newServicePrice.type = 'number';
   newServicePrice.step = '0.01';
   newServicePrice.placeholder = 'Enter Service Price';
   newServicePrice.name = 'prices[]';
   newServicePrice.required = true;
 
+  //Add a delete button to remove the new row
   deleteServiceBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
   deleteServiceBtn.className = 'deleteServiceBtn';
   deleteServiceBtn.type = 'button';
 
+  //Add an onclicklistener for the delete button
   deleteServiceBtn.addEventListener('click', () => {
     serviceRow.remove();
   });
 
+  //Append everything to the service row
   serviceRow.appendChild(newServiceDescription);
   serviceRow.appendChild(newServicePrice);
   serviceRow.appendChild(deleteServiceBtn);
 
+  //Append the service row to the services container
   servicesContainerEdit.appendChild(serviceRow);
 
 });

@@ -1,6 +1,7 @@
 <?php
 require_once 'api_client.php';
 
+//ensures the id exist and is numeric to continue
 $quoteId = $_GET['id'] ?? null;
 if (!$quoteId || !ctype_digit((string)$quoteId)) {
     die('Invalid quote ID.');
@@ -10,6 +11,7 @@ $quoteId = (int)$quoteId;
 $errors       = [];
 $confirmation = null;
 
+//load quote from api: expect the quote to be sanctioned
 $quoteRes = apiRequest('GET', '/' . $quoteId);
 $quote    = ($quoteRes['status'] >= 200 && $quoteRes['status'] < 300 && is_array($quoteRes['data']))
     ? $quoteRes['data']
@@ -36,7 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($discountType === 'percentage' && $discountValue > 100) {
         $errors[] = 'Percentage cannot exceed 100.';
     }
-
+//if valid call api to convert to an order
+    
     if (empty($errors)) {
         $res = apiRequest('POST', '/' . $quoteId . '/order', [
             'finalDiscountType' => $discountType,
@@ -63,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+//load line item to display
 $items = $quote['items'] ?? [];
 include_once 'header.php';
 ?>

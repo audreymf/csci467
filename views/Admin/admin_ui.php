@@ -1,10 +1,10 @@
-<html><head><title>Administration UI</title><link rel="stylesheet" href="Admin.css"></head>
+<html><head><title>Administration UI</title><link rel="stylesheet" href="./css/Admin.css"></head>
 <body id= body1>
 <?php
 
 #connects to database
-require "db_connect.php";
-require_once "Functions.php";
+require "./functions/db_connect.php";
+require_once "./Functions.php";
 
 #Displays the title
 echo "<div class='bar'>";
@@ -21,7 +21,9 @@ if(!isset($_GET['view']) || $_GET['view'] == 'SA'){
 #if currently looking at Sales Quotes
 else{
 	echo "<button type='submit' name='view' value='SA' class=switch>Show Sales Associates</button>";
-    }
+}
+
+echo "<button type='button' class='switch' style='margin-left: 30px;'><a href='./login.php'>Logout</a></button>";
 echo "</form>";
 echo "</div>";
 
@@ -264,7 +266,7 @@ foreach($ids as $id){
 
 #A status should be selected   -Status
 	
-	$statuses = ['Finalized', 'Sanctioned', 'Ordered'];
+	$statuses = ['Draft', 'Finalized', 'Sanctioned', 'Ordered'];
 
 	foreach($statuses as $status){
         	if($_GET['Status'] == $status){

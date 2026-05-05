@@ -1,6 +1,7 @@
 <?php
 require_once 'api_client.php';
 
+//validate quoteid
 $quoteId = $_GET['id'] ?? null;
 if (!$quoteId || !ctype_digit((string)$quoteId)) {
     die('Invalid quote ID.');
@@ -8,6 +9,7 @@ if (!$quoteId || !ctype_digit((string)$quoteId)) {
 $quoteId = (int)$quoteId;
 $errors = [];
 
+//secret notes
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_note') {
     $note = trim($_POST['note_content'] ?? '');
     if ($note !== '') {
@@ -20,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_n
         }
     }
 }
-
+//line item edit
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_item') {
     $itemId = filter_input(INPUT_POST, 'item_id', FILTER_VALIDATE_INT);
     $itemName = trim($_POST['item_name'] ?? '');
@@ -38,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit_
         }
     }
 }
-
+//sanctioning the quote
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sanction') {
     $discountType = $_POST['discount_type'] ?? '';
     $discountValue = filter_input(INPUT_POST, 'discount_value', FILTER_VALIDATE_FLOAT);
@@ -66,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sanct
         $errors[] = 'Failed to sanction quote.';
     }
 }
-
+//load quote details
 $quoteResponse = apiRequest('GET', '/' . $quoteId);
 $quote = ($quoteResponse['status'] >= 200 && $quoteResponse['status'] < 300 && is_array($quoteResponse['data']))
     ? $quoteResponse['data']
